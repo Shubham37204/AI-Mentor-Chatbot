@@ -1,48 +1,97 @@
-from uuid import uuid4
-from datetime import datetime
-from uuid import UUID
+import uuid
+from datetime import datetime, timezone
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from fastapi import HTTPException, status
+from app.models.session import ChatSession
+from app.models.message import Message, RoleEnum
 
-def create_session(user_id, topic, title, db):
-    session = {
-        "id": uuid4(),
-        "user_id": user_id,
-        "topic": topic,
-        "title": title,
-        "created_at": datetime.utcnow(),
-    }
-    db["sessions"].append(session)
+
+async def create_session(
+    user_id: uuid.UUID,
+    topic: str,
+    title: str | None,
+    db: AsyncSession,
+) -> ChatSession:
+    session = ChatSession(
+        user_id=user_id,
+        topic=topic,
+        title=title or f"{topic.capitalize()} Session",
+    )
+    db.add(session)
+    await db.flush()
+    await db.refresh(session)
     return session
 
 
-def get_user_sessions(user_id, db):
-    return [s for s in db["sessions"] if s["user_id"] == user_id]
-
-
-def get_session_history(session_id, user_id, db):
-
-    if isinstance(session_id, str):
-        session_id = UUID(session_id)
-
-    session = next(
-        (s for s in db["sessions"] if s["id"] == session_id and s["user_id"] == user_id),
-        None,
+async def get_user_sessions(
+    user_id: uuid.UUID,
+    db: AsyncSession,
+) -> list[ChatSession]:
+    result = await db.execute(
+        select(ChatSession)
+        .where(ChatSession.user_id == user_id)
+        .order_by(ChatSession.created_at.desc())
     )
+    return list(result.scalars().all())
+
+
+async def get_session_history(
+    session_id: uuid.UUID,
+    user_id: uuid.UUID,
+    db: AsyncSession,
+) -> dict:
+    result = await db.execute(
+        select(ChatSession).where(
+            ChatSession.id == session_id,
+            ChatSession.user_id == user_id,
+        )
+    )
+    session = result.scalar_one_or_none()
     if not session:
-        raise ValueError("Session not found or unauthorized")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Session not found or access denied.",
+        )
 
-    messages = [m for m in db["messages"] if m["session_id"] == session_id]
-    messages.sort(key=lambda x: x["created_at"])
-
+    msg_result = await db.execute(
+        select(Message)
+        .where(Message.session_id == session_id)
+        .order_by(Message.created_at.asc())
+    )
+    messages = list(msg_result.scalars().all())
     return {"session": session, "messages": messages}
 
 
-def save_message(session_id, role, content, db):
-    message = {
-        "id": uuid4(),
-        "session_id": session_id,
-        "role": role,
-        "content": content,
-        "created_at": datetime.utcnow(),
-    }
-    db["messages"].append(message)
+async def save_message(
+    session_id: uuid.UUID,
+    role: RoleEnum,
+    content: str,
+    db: AsyncSession,
+) -> Message:
+    message = Message(
+        session_id=session_id,
+        role=role,
+        content=content,
+    )
+    db.add(message)
+    await db.flush()
+    await db.refresh(message)
     return message
+
+
+async def get_recent_messages(
+    session_id: uuid.UUID,
+    db: AsyncSession,
+    limit: int = 20,
+) -> list[Message]:
+    result = await db.execute(
+        select(Message)
+        .where(Message.session_id == session_id)
+        .order_by(Message.created_at.desc())
+        .limit(limit)
+    )
+    messages = list(result.scalars().all())
+    return list(reversed(messages))
+
+    
