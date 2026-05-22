@@ -1,3 +1,10 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -20,15 +27,14 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as long as the script is
-#  runnable the files are not needed to be committed.
 *.manifest
 *.spec
 
@@ -48,6 +54,32 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+test.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Alembic
+versions/__pycache__/
+
+# Logs
+*.log
+logs/
 
 # Translations
 *.mo

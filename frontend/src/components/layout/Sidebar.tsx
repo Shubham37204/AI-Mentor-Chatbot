@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useChatStore } from "../../store/chatStore";
 import { getSessions } from "../../api/chat";
-import { Plus, MessageSquare, Tag } from "lucide-react";
+import { Plus, MessageSquare, Tag, ChevronLeft } from "lucide-react";
 import { cn } from "../../lib/utils";
 
 const Sidebar = () => {
-  const { sessions, setSessions, currentSession, setCurrentSession } =
+  const { sessions, setSessions, currentSession, setCurrentSession, toggleSidebar } =
     useChatStore();
   useEffect(() => {
     const fetchSessions = async () => {
@@ -20,11 +20,21 @@ const Sidebar = () => {
   }, [currentSession]);
 
   return (
-    <div className="w-[280px] h-full flex flex-col bg-zinc-900 text-zinc-400 border-r border-zinc-800">
-      <div className="p-4">
+    <div className="w-[280px] h-full flex flex-col bg-zinc-900 text-zinc-400 border-r border-zinc-800 relative">
+      <div className="p-4 flex items-center justify-between gap-2">
+        <h2 className="text-sm font-bold text-white">Sessions</h2>
+        <button
+          onClick={toggleSidebar}
+          className="p-2 hover:bg-zinc-800 rounded-lg transition-colors text-zinc-400 hover:text-white ml-auto"
+          title="Close sidebar"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="px-4 py-3">
         <button
           onClick={() => setCurrentSession(null)}
-          className="w-full flex items-center justify-center gap-2 bg-zinc-100 hover:bg-white text-zinc-900 font-semibold py-3 px-4 rounded-xl transition-all shadow-sm group"
+          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md group"
         >
           <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
           <span>New Session</span>

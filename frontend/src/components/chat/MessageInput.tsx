@@ -40,10 +40,10 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
   };
 
   return (
-    <div className="p-4 border-t border-zinc-200 bg-white">
+    <div className="p-6 border-t border-slate-200 bg-gradient-to-t from-slate-50 to-white shadow-lg">
       <form
         onSubmit={handleSubmit}
-        className="max-w-4xl mx-auto flex items-end gap-2"
+        className="max-w-3xl mx-auto flex items-end gap-3"
       >
         <div className="relative flex-1">
           <textarea
@@ -52,18 +52,18 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type your question..."
+            placeholder="Ask me anything..."
             disabled={isStreaming}
             className={cn(
-              "w-full resize-none rounded-xl border border-zinc-300 bg-zinc-50 px-4 py-3 pr-12 text-zinc-800 focus:border-zinc-500 focus:outline-none focus:ring-0 disabled:opacity-50",
-              "scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent"
+              "w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 pr-12 text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:opacity-50 transition-all",
+              "scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent"
             )}
             style={{ maxHeight: '120px' }}
           />
           <button
             type="submit"
             disabled={!input.trim() || isStreaming}
-            className="absolute right-2 bottom-2 p-2 rounded-lg bg-zinc-800 text-white hover:bg-zinc-700 disabled:bg-zinc-300 transition-colors"
+            className="absolute right-3 bottom-3 p-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 disabled:from-slate-300 disabled:to-slate-300 transition-all shadow-md"
           >
             {isStreaming ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -73,7 +73,7 @@ const MessageInput = ({ onSendMessage }: MessageInputProps) => {
           </button>
         </div>
       </form>
-      <p className="text-center text-[10px] text-zinc-400 mt-2">
+      <p className="text-center text-xs text-slate-500 mt-3">
         DSA Coach can make mistakes. Verify important information.
       </p>
     </div>

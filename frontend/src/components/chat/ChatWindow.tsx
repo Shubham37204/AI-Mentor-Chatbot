@@ -30,8 +30,8 @@ const ChatWindow = () => {
 
   if (!currentSession) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center text-zinc-400 bg-zinc-50">
-        <MessageSquare className="w-12 h-12 mb-4 opacity-20" />
+      <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-gradient-to-br from-slate-50 to-slate-100">
+        <MessageSquare className="w-16 h-16 mb-4 opacity-10" />
         <p className="text-lg font-medium">Select a topic to start practicing</p>
       </div>
     );
@@ -40,16 +40,16 @@ const ChatWindow = () => {
   return (
     <div
       ref={scrollRef}
-      className="flex-1 overflow-y-auto bg-zinc-50 py-6 scroll-smooth"
+      className="flex-1 overflow-y-auto bg-gradient-to-b from-slate-50 via-white to-slate-50 py-8 scroll-smooth"
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto px-4">
         {messages.length === 0 ? (
-          <div className="flex justify-center mt-10">
-            <div className="bg-white px-6 py-4 rounded-xl border border-zinc-200 shadow-sm text-center">
-              <p className="text-zinc-600 font-medium">
-                Started session for <span className="text-zinc-900 font-bold">{currentSession.topic}</span>
+          <div className="flex justify-center mt-12">
+            <div className="bg-gradient-to-br from-white to-slate-50 px-8 py-6 rounded-2xl border border-slate-200 shadow-lg text-center">
+              <p className="text-slate-700 font-semibold text-lg">
+                Let's practice <span className="text-blue-600 font-bold">{currentSession.topic}</span>
               </p>
-              <p className="text-sm text-zinc-400 mt-1">Ask anything about this topic!</p>
+              <p className="text-sm text-slate-500 mt-2">Ask me anything about this topic!</p>
             </div>
           </div>
         ) : (

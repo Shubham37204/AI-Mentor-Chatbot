@@ -6,12 +6,15 @@ interface ChatState {
   currentSession: Session | null;
   messages: Message[];
   isStreaming: boolean;
+  sidebarOpen: boolean;
   setSessions: (sessions: Session[]) => void;
   setCurrentSession: (session: Session | null) => void;
   setMessages: (messages: Message[]) => void;
   addMessage: (message: Message) => void;
   appendToLastMessage: (token: string) => void;
   setIsStreaming: (isStreaming: boolean) => void;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -19,6 +22,7 @@ export const useChatStore = create<ChatState>((set) => ({
   currentSession: null,
   messages: [],
   isStreaming: false,
+  sidebarOpen: true,
   setSessions: (sessions) => set({ sessions }),
   setCurrentSession: (session) => set({ currentSession: session }),
   setMessages: (messages) => set({ messages }),
@@ -37,4 +41,6 @@ export const useChatStore = create<ChatState>((set) => ({
       return state;
     }),
   setIsStreaming: (isStreaming) => set({ isStreaming }),
+  setSidebarOpen: (open) => set({ sidebarOpen: open }),
+  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 }));
